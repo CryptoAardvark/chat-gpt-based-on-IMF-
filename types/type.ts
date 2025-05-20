@@ -27,3 +27,8 @@ export interface APIResponse<T> {
   };
   error?: string;
 }
+
+//Pinecone interface
+export interface PineconeParams {
+  imf_indicators: string[];
+}
