@@ -101,4 +101,127 @@ export class ImfGenerator {
       return { data: {imf: "", topics: "" }, error: errorMessage };
     }
   }
+
+  async generateResult(prompt: string, imfData: string) {
+    try {
+      console.log("imfData ->", imfData);
+      const completion = await this.openai.chat.completions.create({
+        model: "gpt-4-1106-preview",
+        messages: [
+          {
+            role: "system",
+            content: `You are an professional AI assistant. When the context is given, summarize this based on the user's query and generate JSON object. This is context reference: ${imfData}. Return JSON:
+            { "chart_source": [
+              {
+                "Topic": "indicator1",
+                "Unit": "unit1",
+                "country": [
+                  {
+                    "country_name": "country1",
+                    "values": [
+                      {
+                        "year1": "value1"
+                      },
+                      {
+                        "year2": "value2"
+                      }
+                    ]
+                  },
+                  {
+                    "country_name": "country2",
+                    "values": [
+                      {
+                        "year1": "value3"
+                      },
+                      {
+                        "year2": "value4"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "Topic": "indicator2",
+                "Unit": "unit2",
+                "country": [
+                  {
+                    "country_name": "country1",
+                    "values": [
+                      {
+                        "year1": "value1"
+                      },
+                      {
+                        "year2": "value2"
+                      }
+                    ]
+                  },
+                  {
+                    "country_name": "country2",
+                    "values": [
+                      {
+                        "year1": "value1"
+                      },
+                      {
+                        "year2": "value2"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "recommend_chart_type": "bar/line/pie/scatter/table/heatmap",
+            "summary": "This is a summary of the data."
+          }
+          Based on the user's query, recommend the chart type and summarize the data. The summary should be comprehensive and informative. The chart type should be appropriate for the data provided. The JSON object should include the chart source, recommended chart type, and summary. The chart source should include the topic, unit, and country with values for each year that include correct value. The recommended chart type should be one of the following: bar, line, pie, scatter, table, or heatmap. The summary should be a brief overview of the data presented. If you can't find information in context, return empty string. Always utilize the information available in the context to ensure accuracy and relevance. And in any case, it should only return the given JSON format and not any other format.`,
+          },
+
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        temperature: 1,
+      });
+      if (!completion.choices[0].message.content) {
+        throw new Error("AI response content is null");
+      }
+      let sanitizedContent = completion?.choices[0].message.content
+        .replace(/```json/g, "") // Remove JSON code block markers
+        .replace(/```/g, "") // Remove stray backticks
+        .trim();
+
+      try {
+        const params: ResultParams = JSON.parse(sanitizedContent);
+        return { data: params };
+      } catch (error: any) {
+        const recompletiton  = await this.openai.chat.completions.create({
+          model: "gpt-4-1106-preview",
+          messages: [
+            {
+              role: "system",
+              content: `If user's query is given, return simple message(3-5 line) for user's query`,
+            },
+            {
+              role: "user",
+              content: prompt,
+            },
+          ]
+        });
+        if (!recompletiton.choices[0].message.content) {
+          throw new Error("AI response content is null");
+        }
+        let sanitizedContent : string = recompletiton?.choices[0].message.content
+        .replace(/```json/g, "") // Remove JSON code block markers
+        .replace(/```/g, "") // Remove stray backticks
+        .trim();
+        let summaryMessage: ResultParams = {chart_source: [], recommend_chart_type: "", summary: ""}; 
+        summaryMessage.summary = sanitizedContent;
+        return {data: summaryMessage};
+      }
+    } catch (error) {
+      let errorMessage = "Unknown error";
+      if (error instanceof Error) errorMessage = error.message;
+      return { data: "", error: errorMessage };
+    }
+  }
 }
