@@ -54,3 +54,8 @@ export interface CountryPerValue {
 export interface YearPerValue {
   [year: string]: string; // Dynamic key for year-value pairs
 }
+
+export interface Message {
+  role: string;
+  content: string;
+}
