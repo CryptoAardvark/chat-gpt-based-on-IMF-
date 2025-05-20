@@ -20,3 +20,9 @@ const generator = new ImfGenerator(
   openaiApikey,
   pineconeApiKey
 );
+
+async function main() {
+  const result = await generator.generateFromPrompt(
+    "I want to know about Co2 emissions of the nearest countries of United states"
+  );
+}
