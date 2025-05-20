@@ -32,3 +32,25 @@ export interface APIResponse<T> {
 export interface PineconeParams {
   imf_indicators: string[];
 }
+
+//Result interface
+export interface ResultParams {
+  chart_source: ResultSource[] | string;
+  recommend_chart_type: string;
+  summary: string;
+}
+
+export interface ResultSource {
+  Topic: string;
+  Unit: string;
+  country: CountryPerValue[];
+}
+
+export interface CountryPerValue {
+  country_name: string;
+  values: YearPerValue[];
+}
+
+export interface YearPerValue {
+  [year: string]: string; // Dynamic key for year-value pairs
+}
