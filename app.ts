@@ -15,3 +15,8 @@ const openaiApikey = process.env.OPENAI_API_KEY;
 if (!pineconeApiKey || !openaiApikey) {
   throw new Error("API key was not defined!");
 }
+
+const generator = new ImfGenerator(
+  openaiApikey,
+  pineconeApiKey
+);
