@@ -10,3 +10,10 @@ export interface IMFParams {
   countries: string[];
   years: string[];
 }
+
+export interface DateParams {
+  imf_years: string[];
+  topics: string;
+  countries: string[];
+  simpleAnswer: string;
+}
