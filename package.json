@@ -1,0 +1,33 @@
+{
+  "name": "testprogram",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.ts",
+    "dev": "nodemon --exec ts-node app.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@pinecone-database/pinecone": "^5.1.2",
+    "@types/express": "^5.0.1",
+    "@types/xml2js": "^0.4.14",
+    "axios": "^1.8.4",
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "langchain": "^0.3.22",
+    "nodemon": "^3.1.9",
+    "openai": "^4.95.1",
+    "pinecone": "^0.1.0",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
